@@ -1,106 +1,123 @@
-# MedVision – AI Smart Health Analysis and Recommendation System
+# MedVision - AI Smart Health Analysis and Recommendation System
 
-![MedVision Logo](link-to-your-logo)
+MedVision is a modern AI-health themed web application built with Next.js, React, TypeScript, Tailwind CSS, and shadcn-style UI components.
 
-**MedVision** is an AI-powered system designed to provide advanced health analysis and personalized recommendations. By leveraging modern AI algorithms, MedVision helps users monitor, assess, and improve their health efficiently and safely.
+It provides an interactive product-style experience for health analysis concepts such as symptom insights, risk awareness, monitoring visuals, and recommendation journeys.
 
----
+## Overview
 
-## 🚀 Features
+This project is a frontend-focused Next.js application with:
 
-* **AI Health Analysis**: Detects potential health risks based on user data using advanced machine learning models.
-* **Personalized Recommendations**: Suggests lifestyle changes, diet adjustments, and exercise plans tailored to individual health profiles.
-* **Real-Time Monitoring**: Tracks user health metrics over time for dynamic analysis.
-* **User-Friendly Dashboard**: Intuitive interface to visualize health data and insights.
-* **Data Security**: Ensures all user data is encrypted and privacy is maintained.
+- App Router architecture
+- Animated UI experience using Framer Motion
+- Charting and data visualizations
+- Component-driven design system
+- Production-ready standalone build output
 
----
+## Features
 
-## 🛠️ Technologies Used
+- Interactive health-focused landing interface
+- Animated sections and transitions
+- Metrics and chart visualizations
+- Modular UI components under src/components/ui
+- Responsive layout for desktop and mobile
+- SEO metadata configured in app layout
 
-* **Python 3.x** – Core programming language
-* **TensorFlow / PyTorch** – AI and machine learning frameworks
-* **Pandas & NumPy** – Data processing and analysis
-* **Matplotlib / Plotly** – Health data visualization
-* **Flask / FastAPI** – Backend API for real-time interaction
-* **SQLite / PostgreSQL** – Secure user data storage
+## Tech Stack
 
----
+- Next.js 16
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Framer Motion
+- Recharts
+- Radix UI primitives
+- Prisma (scripts and dependencies are present for database workflows)
 
-## 📁 Project Structure
+## Project Structure
 
+```text
+.
+|- src
+|  |- app
+|  |  |- layout.tsx
+|  |  |- page.tsx
+|  |  |- globals.css
+|  |  \- api
+|  |- components
+|  |  \- ui
+|  \- medvision.py
+|- public
+|- package.json
+|- next.config.ts
+\- README.md
 ```
-MedVision/
-│
-├── data/                   # Sample health datasets
-├── models/                 # Pretrained AI models
-├── src/                    # Source code
-│   ├── analysis/           # Health analysis algorithms
-│   ├── recommendation/     # Recommendation engine
-│   └── api/                # Backend API scripts
-├── tests/                  # Unit and integration tests
-├── README.md               # Project documentation
-└── requirements.txt        # Python dependencies
-```
 
----
+## Getting Started
 
-## ⚡ Installation
+Prerequisites:
 
-1. Clone the repository:
+- Node.js 20 or newer
+- npm
+- Optional: Bun (only needed if you want to use the current production start script as-is)
+
+1. Install dependencies
 
 ```bash
-git clone https://github.com/yourusername/MedVision.git
-cd MedVision
+npm install
 ```
 
-2. Install dependencies:
+2. Start development server
 
 ```bash
-pip install -r requirements.txt
+npm run dev
 ```
 
-3. Run the application:
+3. Open the app
 
-```bash
-python src/api/app.py
-```
+http://localhost:3000
 
-4. Open your browser and visit `http://localhost:5000`
+## Available Scripts
 
----
+- npm run dev  
+	Starts Next.js development server on port 3000 and writes logs to dev.log
 
-## 🧪 Usage
+- npm run build  
+	Builds production assets and prepares standalone output
 
-1. Upload your health data (CSV, JSON, or manual entry).
-2. Let the AI system analyze your data.
-3. Receive a personalized report and actionable recommendations.
-4. Track your progress over time via the dashboard.
+- npm run start  
+	Starts standalone production server using Bun and writes logs to server.log
 
----
+- npm run lint  
+	Runs ESLint checks
 
-## 🌟 Contributing
+- npm run db:generate
+- npm run db:push
+- npm run db:migrate
+- npm run db:reset
 
-We welcome contributions! Please follow these steps:
+## Notes
+
+- This repository currently focuses on frontend experience and presentation.
+- Some imported UI components may need to be present in src/components/ui depending on your branch state.
+- For production, ensure environment variables and backend integrations are configured if server-side features are added.
+
+## Contributing
+
+Contributions are welcome.
 
 1. Fork the repository
-2. Create a new branch 
-3. Commit your changes 
-4. Push to the branch 
-5. Open a Pull Request
+2. Create a feature branch
+3. Commit your changes
+4. Push your branch
+5. Open a pull request
 
----
+## License
 
-## 📄 License
+This project is licensed under Apache License 2.0. See LICENSE for details.
 
-This project is licensed under the **Apache-2.0** – see the [LICENSE](LICENSE) file for details.
+## Contact
 
----
-
-## 💡 Contact
-
-* **Project Owner**: Ra’uf Fauzan Rambe
-* **Email**: ramberauffauzan@gmail.com 
-* **GitHub**: RaufFauzanRambe(https://github.com/RaufFauzanRambe)
-
----
+- Project Owner: Ra'uf Fauzan Rambe
+- Email: ramberauffauzan@gmail.com
+- GitHub: https://github.com/RaufFauzanRambe
