@@ -1,0 +1,336 @@
+# =============================================================================
+# MedVision-AI - Makefile
+# =============================================================================
+# Usage:
+#   make <target>
+#
+# Examples:
+#   make install       # Install dependencies
+#   make lint          # Run all linters
+#   make test          # Run test suite
+#   make serve         # Start the API server
+#   make help          # Show all available targets
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+PYTHON          ?= python3
+PIP             ?= pip
+VENV            := .venv
+VENV_BIN        := $(VENV)/bin
+VENV_PYTHON     := $(VENV_BIN)/python
+VENV_PIP        := $(VENV_BIN)/pip
+PACKAGE         := medvision_ai
+SRC_DIR         := medvision_ai
+TEST_DIR        := tests
+PORT            ?= 8000
+HOST            ?= 0.0.0.0
+WORKERS         ?= 4
+
+# Colors for output
+BOLD            := \033[1m
+GREEN           := \033[32m
+YELLOW          := \033[33m
+CYAN            := \033[36m
+RESET           := \033[0m
+
+# ---------------------------------------------------------------------------
+# Default Target
+# ---------------------------------------------------------------------------
+.PHONY: help
+help: ## Show this help message
+	@echo ""
+	@echo "$(BOLD)$(CYAN)MedVision-AI - Available Commands$(RESET)"
+	@echo "$(BOLD)$(CYAN)==================================$(RESET)"
+	@echo ""
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-18s$(RESET) %s\n", $$1, $$2}'
+	@echo ""
+
+# ===========================================================================
+# Installation
+# ===========================================================================
+
+.PHONY: install
+install: ## Install production dependencies
+	$(PIP) install --upgrade pip setuptools wheel
+	$(PIP) install -r requirements.txt
+	@echo "$(GREEN)✔ Production dependencies installed$(RESET)"
+
+.PHONY: dev-install
+dev-install: ## Install with development dependencies
+	$(PIP) install --upgrade pip setuptools wheel
+	$(PIP) install -e ".[dev]"
+	@echo "$(GREEN)✔ Development dependencies installed$(RESET)"
+
+.PHONY: venv
+venv: ## Create a virtual environment
+	$(PYTHON) -m venv $(VENV)
+	@echo "$(GREEN)✔ Virtual environment created at $(VENV)$(RESET)"
+	@echo "$(YELLOW)  Activate with: source $(VENV_BIN)/activate$(RESET)"
+
+.PHONY: pre-commit
+pre-commit: ## Install pre-commit hooks
+	$(PIP) install pre-commit
+	pre-commit install
+	@echo "$(GREEN)✔ Pre-commit hooks installed$(RESET)"
+
+# ===========================================================================
+# Code Quality
+# ===========================================================================
+
+.PHONY: lint
+lint: ## Run all linters (ruff, mypy)
+	@echo "$(BOLD)$(CYAN)Running linters...$(RESET)"
+	ruff check $(SRC_DIR) $(TEST_DIR)
+	mypy $(SRC_DIR)
+	@echo "$(GREEN)✔ All linters passed$(RESET)"
+
+.PHONY: format
+format: ## Auto-format code with ruff and black
+	@echo "$(BOLD)$(CYAN)Formatting code...$(RESET)"
+	ruff check --fix $(SRC_DIR) $(TEST_DIR)
+	black $(SRC_DIR) $(TEST_DIR)
+	isort $(SRC_DIR) $(TEST_DIR)
+	@echo "$(GREEN)✔ Code formatted$(RESET)"
+
+.PHONY: format-check
+format-check: ## Check formatting without making changes
+	@echo "$(BOLD)$(CYAN)Checking formatting...$(RESET)"
+	ruff check $(SRC_DIR) $(TEST_DIR)
+	black --check $(SRC_DIR) $(TEST_DIR)
+	isort --check-only $(SRC_DIR) $(TEST_DIR)
+	@echo "$(GREEN)✔ Formatting check passed$(RESET)"
+
+.PHONY: type-check
+type-check: ## Run mypy type checking
+	@echo "$(BOLD)$(CYAN)Running type checker...$(RESET)"
+	mypy $(SRC_DIR)
+	@echo "$(GREEN)✔ Type checking passed$(RESET)"
+
+# ===========================================================================
+# Testing
+# ===========================================================================
+
+.PHONY: test
+test: ## Run the test suite
+	@echo "$(BOLD)$(CYAN)Running tests...$(RESET)"
+	pytest $(TEST_DIR) -v --tb=short
+	@echo "$(GREEN)✔ Tests passed$(RESET)"
+
+.PHONY: test-cov
+test-cov: ## Run tests with coverage report
+	@echo "$(BOLD)$(CYAN)Running tests with coverage...$(RESET)"
+	pytest $(TEST_DIR) -v --cov=$(PACKAGE) --cov-report=term-missing --cov-report=html --cov-report=xml
+	@echo "$(GREEN)✔ Coverage report generated in htmlcov/$(RESET)"
+
+.PHONY: test-unit
+test-unit: ## Run unit tests only
+	pytest $(TEST_DIR)/unit -v --tb=short
+
+.PHONY: test-integration
+test-integration: ## Run integration tests only
+	pytest $(TEST_DIR)/integration -v --tb=short
+
+.PHONY: test-slow
+test-slow: ## Run slow tests (including model loading)
+	pytest $(TEST_DIR) -v -m slow --tb=short
+
+.PHONY: test-quick
+test-quick: ## Run quick tests (excluding slow tests)
+	pytest $(TEST_DIR) -v -m "not slow" --tb=short
+
+# ===========================================================================
+# Training & Model Management
+# ===========================================================================
+
+.PHONY: train
+train: ## Train models with default configuration
+	@echo "$(BOLD)$(CYAN)Starting model training...$(RESET)"
+	$(PYTHON) -m $(PACKAGE).scripts.train --config configs/default.yaml
+	@echo "$(GREEN)✔ Training complete$(RESET)"
+
+.PHONY: evaluate
+evaluate: ## Evaluate trained models
+	@echo "$(BOLD)$(CYAN)Evaluating models...$(RESET)"
+	$(PYTHON) -m $(PACKAGE).scripts.evaluate
+	@echo "$(GREEN)✔ Evaluation complete$(RESET)"
+
+.PHONY: export-onnx
+export-onnx: ## Export models to ONNX format
+	@echo "$(BOLD)$(CYAN)Exporting models to ONNX...$(RESET)"
+	$(PYTHON) -m $(PACKAGE).scripts.export_onnx
+	@echo "$(GREEN)✔ ONNX export complete$(RESET)"
+
+# ===========================================================================
+# Server
+# ===========================================================================
+
+.PHONY: serve
+serve: ## Start the API server (development mode)
+	@echo "$(BOLD)$(CYAN)Starting MedVision-AI API server...$(RESET)"
+	uvicorn $(PACKAGE).main:app --host $(HOST) --port $(PORT) --reload --log-level info
+
+.PHONY: serve-prod
+serve-prod: ## Start the API server (production mode)
+	@echo "$(BOLD)$(CYAN)Starting MedVision-AI API server (production)...$(RESET)"
+	uvicorn $(PACKAGE).main:app --host $(HOST) --port $(PORT) --workers $(WORKERS) --log-level info --access-log
+
+.PHONY: dashboard
+dashboard: ## Launch the Streamlit dashboard
+	@echo "$(BOLD)$(CYAN)Starting Streamlit dashboard...$(RESET)"
+	streamlit run $(SRC_DIR)/dashboard/app.py --server.port 8501
+
+.PHONY: playground
+playground: ## Launch the Gradio playground
+	@echo "$(BOLD)$(CYAN)Starting Gradio playground...$(RESET)"
+	$(PYTHON) -m $(PACKAGE).playground
+
+# ===========================================================================
+# Docker
+# ===========================================================================
+
+.PHONY: docker-build
+docker-build: ## Build the Docker image
+	@echo "$(BOLD)$(CYAN)Building Docker image...$(RESET)"
+	docker build -t medvision-ai:latest -t medvision-ai:0.1.0 .
+	@echo "$(GREEN)✔ Docker image built$(RESET)"
+
+.PHONY: docker-up
+docker-up: ## Start all Docker services
+	@echo "$(BOLD)$(CYAN)Starting Docker services...$(RESET)"
+	docker-compose up -d
+	@echo "$(GREEN)✔ Docker services started$(RESET)"
+	@echo "$(YELLOW)  API: http://localhost:8000$(RESET)"
+	@echo "$(YELLOW)  Docs: http://localhost:8000/docs$(RESET)"
+	@echo "$(YELLOW)  MLflow: http://localhost:5000$(RESET)"
+
+.PHONY: docker-down
+docker-down: ## Stop all Docker services
+	@echo "$(BOLD)$(CYAN)Stopping Docker services...$(RESET)"
+	docker-compose down
+	@echo "$(GREEN)✔ Docker services stopped$(RESET)"
+
+.PHONY: docker-logs
+docker-logs: ## View Docker service logs
+	docker-compose logs -f medvision-api
+
+.PHONY: docker-restart
+docker-restart: ## Restart Docker services
+	docker-compose restart
+	@echo "$(GREEN)✔ Docker services restarted$(RESET)"
+
+.PHONY: docker-clean
+docker-clean: ## Remove Docker containers, volumes, and images
+	docker-compose down -v --rmi local
+	@echo "$(GREEN)✔ Docker resources cleaned$(RESET)"
+
+# ===========================================================================
+# Database
+# ===========================================================================
+
+.PHONY: migrate
+migrate: ## Run database migrations
+	@echo "$(BOLD)$(CYAN)Running database migrations...$(RESET)"
+	alembic upgrade head
+	@echo "$(GREEN)✔ Migrations applied$(RESET)"
+
+.PHONY: migrate-down
+migrate-down: ## Rollback the last migration
+	@echo "$(BOLD)$(CYAN)Rolling back migration...$(RESET)"
+	alembic downgrade -1
+	@echo "$(GREEN)✔ Migration rolled back$(RESET)"
+
+.PHONY: migrate-create
+migrate-create: ## Create a new migration (usage: make migrate-create MSG="description")
+	@echo "$(BOLD)$(CYAN)Creating migration...$(RESET)"
+	alembic revision --autogenerate -m "$(MSG)"
+	@echo "$(GREEN)✔ Migration created$(RESET)"
+
+.PHONY: seed-db
+seed-db: ## Seed the database with sample data
+	@echo "$(BOLD)$(CYAN)Seeding database...$(RESET)"
+	$(PYTHON) -m scripts.seed_db
+	@echo "$(GREEN)✔ Database seeded$(RESET)"
+
+# ===========================================================================
+# Documentation
+# ===========================================================================
+
+.PHONY: docs
+docs: ## Build and serve documentation
+	@echo "$(BOLD)$(CYAN)Building documentation...$(RESET)"
+	mkdocs serve -a 0.0.0.0:8080
+
+.PHONY: docs-build
+docs-build: ## Build documentation for deployment
+	mkdocs build
+	@echo "$(GREEN)✔ Documentation built in site/$(RESET)"
+
+# ===========================================================================
+# Cleanup
+# ===========================================================================
+
+.PHONY: clean
+clean: ## Remove build artifacts, caches, and generated files
+	@echo "$(BOLD)$(CYAN)Cleaning up...$(RESET)"
+	rm -rf build/
+	rm -rf dist/
+	rm -rf *.egg-info
+	rm -rf .eggs/
+	rm -rf __pycache__/
+	rm -rf .pytest_cache/
+	rm -rf .mypy_cache/
+	rm -rf .ruff_cache/
+	rm -rf htmlcov/
+	rm -rf coverage.xml
+	rm -rf .coverage
+	rm -rf site/
+	rm -rf *.pyc
+	rm -rf *.pyo
+	rm -rf *.so
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	find . -type f -name "*.pyo" -delete 2>/dev/null || true
+	@echo "$(GREEN)✔ Cleaned up build artifacts$(RESET)"
+
+.PHONY: clean-models
+clean-models: ## Remove downloaded model checkpoints
+	rm -rf models/checkpoints/*.pth
+	rm -rf models/checkpoints/*.pt
+	rm -rf models/checkpoints/*.onnx
+	@echo "$(GREEN)✔ Model checkpoints cleaned$(RESET)"
+
+.PHONY: clean-data
+clean-data: ## Remove processed data (keeps raw data)
+	rm -rf data/processed/*
+	@echo "$(GREEN)✔ Processed data cleaned$(RESET)"
+
+.PHONY: clean-all
+clean-all: clean clean-models clean-data ## Remove everything (artifacts, models, data)
+	@echo "$(GREEN)✔ All cleaned$(RESET)"
+
+# ===========================================================================
+# Utility
+# ===========================================================================
+
+.PHONY: check
+check: lint type-check test ## Run all checks (lint + type-check + test)
+	@echo "$(GREEN)✔ All checks passed$(RESET)"
+
+.PHONY: setup
+setup: venv dev-install pre-commit ## Complete development setup (venv + deps + hooks)
+	@echo "$(GREEN)✔ Development environment ready!$(RESET)"
+	@echo "$(YELLOW)  Activate with: source $(VENV_BIN)/activate$(RESET)"
+
+.PHONY: update-deps
+update-deps: ## Update all dependencies
+	$(PIP) install --upgrade pip setuptools wheel
+	$(PIP) install --upgrade -r requirements.txt
+	@echo "$(GREEN)✔ Dependencies updated$(RESET)"
+
+.PHONY: version
+version: ## Show current version
+	@$(PYTHON) -c "import importlib.metadata; print(importlib.metadata.version('$(PACKAGE)'))" 2>/dev/null || echo "0.1.0 (not installed)"

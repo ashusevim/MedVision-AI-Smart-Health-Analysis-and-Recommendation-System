@@ -1,0 +1,124 @@
+# =============================================================================
+# MedVision-AI - Multi-Stage Docker Build
+# =============================================================================
+# Stage 1: Builder - Install dependencies
+# Stage 2: Runtime - Minimal production image
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# ARGs
+# ---------------------------------------------------------------------------
+ARG PYTHON_VERSION=3.11
+ARG BASE_IMAGE=python:${PYTHON_VERSION}-slim
+
+# ===========================================================================
+# STAGE 1: Builder
+# ===========================================================================
+FROM ${BASE_IMAGE} AS builder
+
+# Metadata
+LABEL maintainer="MedVision-AI Team <team@medvision-ai.dev>"
+LABEL stage=builder
+
+# Prevent Python from writing .pyc files and enable unbuffered output
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=100
+
+# Install system build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
+    curl \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create virtual environment in builder
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install Python dependencies
+# First copy only requirements to leverage Docker layer caching
+WORKDIR /build
+
+COPY requirements.txt .
+
+# Install dependencies in stages for better caching
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application code and install
+COPY . .
+
+RUN pip install --no-cache-dir -e .
+
+# ===========================================================================
+# STAGE 2: Runtime
+# ===========================================================================
+FROM ${BASE_IMAGE} AS runtime
+
+# Metadata
+LABEL maintainer="MedVision-AI Team <team@medvision-ai.dev>"
+LABEL org.opencontainers.image.title="MedVision-AI" \
+      org.opencontainers.image.description="Multimodal Medical Image Analysis & Clinical Decision Support Platform" \
+      org.opencontainers.image.version="0.1.0" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.source="https://github.com/medvision-ai/medvision-ai"
+
+# Runtime environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    MODEL_CACHE_DIR=/app/models/checkpoints \
+    LOG_DIR=/app/logs \
+    APP_HOST=0.0.0.0 \
+    APP_PORT=8000 \
+    WORKERS=4 \
+    WORKER_CLASS=uvicorn.workers.UvicornWorker \
+    TIMEOUT=120
+
+# Install minimal runtime dependencies only
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    libgomp1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -r medvision \
+    && useradd -r -g medvision -d /app -s /sbin/nologin -c "MedVision-AI runtime user" medvision
+
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+
+# Copy application code
+WORKDIR /app
+
+COPY --chown=medvision:medvision . .
+
+# Create necessary directories with proper ownership
+RUN mkdir -p /app/models/checkpoints /app/logs /app/data && \
+    chown -R medvision:medvision /app
+
+# Switch to non-root user
+USER medvision
+
+# Expose the application port
+EXPOSE 8000
+
+# Health check - verify the API is responding
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Run the application with gunicorn for production
+CMD ["sh", "-c", "uvicorn medvision_ai.main:app --host ${APP_HOST} --port ${APP_PORT} --workers ${WORKERS} --timeout ${TIMEOUT} --log-level info --access-log"]

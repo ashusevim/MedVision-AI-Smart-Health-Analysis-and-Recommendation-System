@@ -1,0 +1,197 @@
+# =============================================================================
+# MedVision-AI - Docker Compose Configuration
+# =============================================================================
+# Usage:
+#   docker-compose up -d              # Start all services
+#   docker-compose up -d medvision-api # Start API with dependencies
+#   docker-compose logs -f             # Follow logs
+#   docker-compose down                # Stop all services
+# =============================================================================
+
+version: "3.9"
+
+services:
+  # ---------------------------------------------------------------------------
+  # MedVision-AI API Server
+  # ---------------------------------------------------------------------------
+  medvision-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: "3.11"
+    container_name: medvision-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - WORKERS=4
+      - DATABASE_URL=postgresql+psycopg2://medvision:medvision@postgres:5432/medvision
+      - REDIS_URL=redis://redis:6379/0
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MODEL_CACHE_DIR=/app/models/checkpoints
+      - LOG_DIR=/app/logs
+    volumes:
+      - model-cache:/app/models/checkpoints
+      - app-logs:/app/logs
+      - app-data:/app/data
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - medvision-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+        limits:
+          memory: 8G
+    labels:
+      - "com.medvision-ai.service=api"
+      - "com.medvision-ai.version=0.1.0"
+
+  # ---------------------------------------------------------------------------
+  # Redis - Caching & Message Broker
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: medvision-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --appendfsync everysec
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medvision-network
+    labels:
+      - "com.medvision-ai.service=redis"
+
+  # ---------------------------------------------------------------------------
+  # PostgreSQL - Primary Database
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: medvision-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: medvision
+      POSTGRES_USER: medvision
+      POSTGRES_PASSWORD: medvision
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medvision -d medvision"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medvision-network
+    labels:
+      - "com.medvision-ai.service=postgres"
+
+  # ---------------------------------------------------------------------------
+  # MLflow - Experiment Tracking Server
+  # ---------------------------------------------------------------------------
+  mlflow:
+    image: python:3.11-slim
+    container_name: medvision-mlflow
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=postgresql://medvision:medvision@postgres:5432/mlflow
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlflow/artifacts
+      - MLFLOW_HOST=0.0.0.0
+      - MLFLOW_PORT=5000
+    command: >
+      bash -c "
+        pip install --no-cache-dir mlflow>=2.9.0 psycopg2-binary>=2.9.9 &&
+        mlflow server
+        --backend-store-uri postgresql://medvision:medvision@postgres:5432/mlflow
+        --default-artifact-root /mlflow/artifacts
+        --host 0.0.0.0
+        --port 5000
+      "
+    volumes:
+      - mlflow-artifacts:/mlflow/artifacts
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - medvision-network
+    labels:
+      - "com.medvision-ai.service=mlflow"
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  redis-data:
+    driver: local
+    name: medvision-redis-data
+
+  postgres-data:
+    driver: local
+    name: medvision-postgres-data
+
+  model-cache:
+    driver: local
+    name: medvision-model-cache
+
+  mlflow-artifacts:
+    driver: local
+    name: medvision-mlflow-artifacts
+
+  app-logs:
+    driver: local
+    name: medvision-app-logs
+
+  app-data:
+    driver: local
+    name: medvision-app-data
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  medvision-network:
+    driver: bridge
+    name: medvision-network
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
