@@ -1,0 +1,436 @@
+{
+  "diseases": [
+    {
+      "disease_id": "D001",
+      "name": "Acute Myocardial Infarction",
+      "icd10_code": "I21.9",
+      "description": "Acute myocardial infarction (AMI), commonly known as a heart attack, occurs when blood flow to a portion of the heart muscle is severely reduced or interrupted, resulting in necrosis of the myocardial tissue. It is a medical emergency requiring immediate intervention.",
+      "common_symptoms": [
+        "Chest pain or pressure",
+        "Radiating pain to left arm, jaw, or back",
+        "Shortness of breath",
+        "Diaphoresis",
+        "Nausea and vomiting",
+        "Anxiety or sense of impending doom",
+        "Lightheadedness"
+      ],
+      "risk_factors": [
+        "Advanced age (>65 years)",
+        "Hypertension",
+        "Hyperlipidemia",
+        "Diabetes mellitus",
+        "Smoking",
+        "Family history of coronary artery disease",
+        "Obesity",
+        "Sedentary lifestyle"
+      ],
+      "recommended_tests": [
+        "12-lead Electrocardiogram (ECG)",
+        "Cardiac Troponin I or T (serial)",
+        "CK-MB",
+        "Complete Blood Count",
+        "Comprehensive Metabolic Panel",
+        "BNP or NT-proBNP",
+        "Chest X-ray",
+        "Echocardiography",
+        "Coronary Angiography"
+      ],
+      "treatment_protocols": [
+        "Immediate aspirin 325mg chewable",
+        "P2Y12 inhibitor loading (clopidogrel/ticagrelor)",
+        "Percutaneous Coronary Intervention (PCI) within 90 minutes",
+        "Thrombolytic therapy if PCI unavailable within 120 minutes",
+        "Heparin anticoagulation",
+        "Beta-blocker therapy",
+        "ACE inhibitor or ARB",
+        "High-intensity statin therapy",
+        "Cardiac rehabilitation referral"
+      ],
+      "severity_levels": {
+        "mild": "NSTEMI with minor troponin elevation, hemodynamically stable",
+        "moderate": "NSTEMI with significant troponin elevation or STEMI with single vessel involvement",
+        "severe": "STEMI with cardiogenic shock, multi-vessel disease, or cardiac arrest"
+      }
+    },
+    {
+      "disease_id": "D002",
+      "name": "Community-Acquired Pneumonia",
+      "icd10_code": "J18.9",
+      "description": "Community-acquired pneumonia (CAP) is an acute infection of the pulmonary parenchyma acquired outside of a healthcare setting. It is one of the most common infectious diseases and a leading cause of morbidity and mortality worldwide, particularly in the elderly and immunocompromised.",
+      "common_symptoms": [
+        "Productive cough",
+        "Fever and chills",
+        "Pleuritic chest pain",
+        "Dyspnea",
+        "Tachypnea",
+        "Fatigue and malaise",
+        "Sputum production (purulent or rust-colored)"
+      ],
+      "risk_factors": [
+        "Advanced age",
+        "COPD",
+        "Immunosuppression",
+        "Smoking",
+        "Alcoholism",
+        "Aspiration risk",
+        "Chronic heart disease",
+        "Diabetes mellitus"
+      ],
+      "recommended_tests": [
+        "Chest X-ray (PA and lateral)",
+        "Complete Blood Count with differential",
+        "C-reactive protein (CRP)",
+        "Procalcitonin",
+        "Blood cultures (before antibiotics)",
+        "Sputum Gram stain and culture",
+        "Arterial Blood Gas analysis",
+        "Urine antigen testing (Legionella, Streptococcus pneumoniae)",
+        "CT chest if complicated"
+      ],
+      "treatment_protocols": [
+        "CURB-65 or PSI scoring for severity assessment",
+        "Outpatient: Amoxicillin or doxycycline (low risk)",
+        "Outpatient: Respiratory fluoroquinolone or beta-lactam + macrolide (comorbidities)",
+        "Inpatient non-ICU: Beta-lactam + macrolide or respiratory fluoroquinolone",
+        "Inpatient ICU: Beta-lactam + macrolide (or fluoroquinolone)",
+        "Supplemental oxygen to maintain SpO2 >92%",
+        "IV fluids if dehydrated",
+        "Vaccination (pneumococcal, influenza) at discharge"
+      ],
+      "severity_levels": {
+        "mild": "CURB-65 score 0-1, outpatient management appropriate",
+        "moderate": "CURB-65 score 2, brief hospitalization likely",
+        "severe": "CURB-65 score 3-5, ICU admission, possible mechanical ventilation"
+      }
+    },
+    {
+      "disease_id": "D003",
+      "name": "Type 2 Diabetes Mellitus",
+      "icd10_code": "E11.9",
+      "description": "Type 2 diabetes mellitus is a chronic metabolic disorder characterized by insulin resistance and progressive beta-cell dysfunction, leading to hyperglycemia. It is the most common form of diabetes, accounting for approximately 90-95% of all diabetes cases, and is associated with significant long-term microvascular and macrovascular complications.",
+      "common_symptoms": [
+        "Polyuria",
+        "Polydipsia",
+        "Polyphagia",
+        "Unintentional weight loss",
+        "Fatigue",
+        "Blurred vision",
+        "Slow-healing wounds",
+        "Recurrent infections"
+      ],
+      "risk_factors": [
+        "Obesity (BMI >30)",
+        "Sedentary lifestyle",
+        "Family history of type 2 diabetes",
+        "Age >45 years",
+        "Prediabetes (HbA1c 5.7-6.4%)",
+        "Gestational diabetes history",
+        "Polycystic ovary syndrome",
+        "Ethnic predisposition (African American, Hispanic, Native American)"
+      ],
+      "recommended_tests": [
+        "Hemoglobin A1c (HbA1c)",
+        "Fasting plasma glucose",
+        "Oral glucose tolerance test (OGTT)",
+        "Comprehensive Metabolic Panel",
+        "Lipid panel",
+        "Urine albumin-to-creatinine ratio",
+        "Estimated GFR",
+        "Foot examination (monofilament)",
+        "Dilated eye examination"
+      ],
+      "treatment_protocols": [
+        "Lifestyle modifications (diet, exercise, weight loss)",
+        "Metformin as first-line therapy",
+        "GLP-1 receptor agonist or SGLT2 inhibitor (high cardiovascular/renal risk)",
+        "DPP-4 inhibitor or sulfonylurea as add-on",
+        "Basal insulin if HbA1c >10% or symptomatic hyperglycemia",
+        "Blood pressure target <130/80 mmHg",
+        "Statin therapy for lipid management",
+        "Annual comprehensive foot exam",
+        "Regular ophthalmologic screening"
+      ],
+      "severity_levels": {
+        "mild": "HbA1c <7.5%, no complications, manageable with lifestyle and monotherapy",
+        "moderate": "HbA1c 7.5-9.0%, early microvascular complications, dual/triple therapy required",
+        "severe": "HbA1c >9.0%, established complications, insulin-dependent, or diabetic emergencies"
+      }
+    },
+    {
+      "disease_id": "D004",
+      "name": "Ischemic Stroke",
+      "icd10_code": "I63.9",
+      "description": "Ischemic stroke occurs when blood supply to part of the brain is interrupted or reduced, preventing brain tissue from receiving oxygen and nutrients. It accounts for approximately 87% of all strokes and is a leading cause of long-term disability. Time-sensitive interventions are critical for optimal outcomes.",
+      "common_symptoms": [
+        "Sudden unilateral weakness or numbness",
+        "Facial drooping",
+        "Speech difficulties (dysarthria, aphasia)",
+        "Visual disturbances",
+        "Sudden severe headache",
+        "Dizziness and loss of coordination",
+        "Confusion or altered consciousness"
+      ],
+      "risk_factors": [
+        "Hypertension (most significant modifiable risk factor)",
+        "Atrial fibrillation",
+        "Diabetes mellitus",
+        "Hyperlipidemia",
+        "Carotid artery stenosis",
+        "Smoking",
+        "Prior stroke or TIA",
+        "Sickle cell disease"
+      ],
+      "recommended_tests": [
+        "Non-contrast CT head (immediate)",
+        "CT Angiography (CTA) of head and neck",
+        "CT Perfusion imaging",
+        "MRI with diffusion-weighted imaging (DWI)",
+        "Complete Blood Count",
+        "Coagulation panel (PT/INR, aPTT)",
+        "Basic Metabolic Panel",
+        "Cardiac enzymes (troponin)",
+        "Echocardiography",
+        "Telemetry monitoring for atrial fibrillation"
+      ],
+      "treatment_protocols": [
+        "IV Alteplase (tPA) within 4.5 hours of symptom onset",
+        "Mechanical thrombectomy for large vessel occlusion within 24 hours",
+        "Antiplatelet therapy (aspirin 160-325mg) after 24h if tPA given",
+        "DVT prophylaxis",
+        "Blood pressure management (permissive hypertension if not receiving tPA)",
+        "Blood glucose optimization (target 140-180 mg/dL)",
+        "Temperature management",
+        "Dysphagia screening before oral intake",
+        "Early mobilization and rehabilitation"
+      ],
+      "severity_levels": {
+        "mild": "NIHSS score 1-4, small vessel lacunar infarct, good functional outcome expected",
+        "moderate": "NIHSS score 5-15, cortical involvement, some residual deficit likely",
+        "severe": "NIHSS score >15, large vessel occlusion, significant disability or mortality risk"
+      }
+    },
+    {
+      "disease_id": "D005",
+      "name": "Congestive Heart Failure",
+      "icd10_code": "I50.9",
+      "description": "Congestive heart failure (CHF) is a clinical syndrome in which the heart is unable to pump sufficient blood to meet the metabolic demands of the body, or can do so only at the expense of elevated filling pressures. It represents the end stage of many cardiac diseases and carries significant morbidity and mortality.",
+      "common_symptoms": [
+        "Dyspnea on exertion",
+        "Orthopnea",
+        "Paroxysmal nocturnal dyspnea",
+        "Peripheral edema",
+        "Fatigue and exercise intolerance",
+        "Weight gain from fluid retention",
+        "Nocturnal cough",
+        "Abdominal distension"
+      ],
+      "risk_factors": [
+        "Coronary artery disease",
+        "Hypertension",
+        "Valvular heart disease",
+        "Diabetes mellitus",
+        "Obesity",
+        "Cardiomyopathy",
+        "Alcohol abuse",
+        "Prior chemotherapy (anthracyclines)"
+      ],
+      "recommended_tests": [
+        "BNP or NT-proBNP",
+        "Transthoracic Echocardiography (LVEF assessment)",
+        "12-lead ECG",
+        "Chest X-ray",
+        "Comprehensive Metabolic Panel",
+        "Complete Blood Count",
+        "Thyroid-stimulating hormone (TSH)",
+        "Cardiac MRI (if etiology unclear)",
+        "Right heart catheterization (selected cases)",
+        "Coronary angiography"
+      ],
+      "treatment_protocols": [
+        "ACE inhibitor/ARB/ARNI (sacubitril-valsartan)",
+        "Beta-blocker (carvedilol, metoprolol succinate, bisoprolol)",
+        "Mineralocorticoid receptor antagonist (spironolactone/eplerenone)",
+        "SGLT2 inhibitor (dapagliflozin, empagliflozin)",
+        "Diuretics for volume management (furosemide)",
+        "Hydralazine-isosorbide dinitrate (African American patients)",
+        "Digoxin (symptom control in atrial fibrillation)",
+        "Sodium restriction (<3g/day)",
+        "Daily weight monitoring",
+        "ICD or CRT device therapy (indicated LVEF ≤35%)"
+      ],
+      "severity_levels": {
+        "mild": "NYHA Class I-II, LVEF 41-49%, symptoms with significant exertion",
+        "moderate": "NYHA Class III, LVEF 30-40%, symptoms with minimal exertion",
+        "severe": "NYHA Class IV, LVEF <30%, symptoms at rest, refractory to medical therapy"
+      }
+    },
+    {
+      "disease_id": "D006",
+      "name": "Acute Pancreatitis",
+      "icd10_code": "K85.9",
+      "description": "Acute pancreatitis is an inflammatory condition of the pancreas that occurs when pancreatic enzymes become activated within the pancreas itself, causing autodigestion of the gland. It ranges from mild, self-limiting edematous pancreatitis to severe necrotizing disease with multi-organ failure.",
+      "common_symptoms": [
+        "Severe epigastric pain radiating to the back",
+        "Nausea and vomiting",
+        "Abdominal tenderness and guarding",
+        "Fever",
+        "Tachycardia",
+        "Ileus (absence of bowel sounds)",
+        "Jaundice (if biliary etiology)"
+      ],
+      "risk_factors": [
+        "Gallstones (most common cause)",
+        "Alcohol abuse (second most common)",
+        "Hypertriglyceridemia",
+        "Hypercalcemia",
+        "Medications (thiazides, valproic acid, azathioprine)",
+        "ERCP procedure",
+        "Pancreatic structural anomalies",
+        "Autoimmune conditions"
+      ],
+      "recommended_tests": [
+        "Serum lipase (3x upper limit of normal)",
+        "Serum amylase",
+        "Complete Blood Count",
+        "Comprehensive Metabolic Panel (including calcium)",
+        "Triglycerides",
+        "CRP (at 48 hours for severity prediction)",
+        "Abdominal ultrasound (gallstone evaluation)",
+        "Contrast-enhanced CT abdomen (severity assessment after 48-72h)",
+        "MRI/MRCP if biliary etiology suspected"
+      ],
+      "treatment_protocols": [
+        "Aggressive IV fluid resuscitation (Ringer's lactate preferred)",
+        "Pain management (IV opioids)",
+        "NPO initially, early enteral feeding within 24-48h if tolerated",
+        "Cholecystectomy during same admission if biliary pancreatitis",
+        "Nutritional support (nasogastric or nasojejunal tube if needed)",
+        "Antibiotics only for infected necrosis (not prophylactic)",
+        "Endoscopic or percutaneous drainage for walled-off necrosis",
+        "ICU admission for severe disease with organ failure"
+      ],
+      "severity_levels": {
+        "mild": "No organ failure, no local/systemic complications, resolves in 48-72 hours",
+        "moderate": "Transient organ failure (<48h) or local complications",
+        "severe": "Persistent organ failure (>48h), necrotizing pancreatitis, high mortality risk"
+      }
+    },
+    {
+      "disease_id": "D007",
+      "name": "Systemic Lupus Erythematosus",
+      "icd10_code": "M32.9",
+      "description": "Systemic lupus erythematosus (SLE) is a chronic autoimmune disease characterized by the production of autoantibodies against nuclear antigens, leading to multisystem inflammation. It predominantly affects women of childbearing age and has a variable clinical course with periods of flare and remission.",
+      "common_symptoms": [
+        "Malar (butterfly) rash",
+        "Arthralgia and arthritis",
+        "Fatigue",
+        "Fever",
+        "Photosensitivity",
+        "Oral ulcers",
+        "Raynaud phenomenon",
+        "Alopecia",
+        "Serositis (pleuritis, pericarditis)"
+      ],
+      "risk_factors": [
+        "Female sex (9:1 female-to-male ratio)",
+        "Reproductive age (15-44 years)",
+        "African American or Asian ethnicity",
+        "Family history of autoimmune disease",
+        "Estrogen exposure",
+        "UV light exposure",
+        "Certain medications (hydralazine, procainamide)",
+        "Epstein-Barr virus infection"
+      ],
+      "recommended_tests": [
+        "Antinuclear antibody (ANA)",
+        "Anti-dsDNA antibody",
+        "Anti-Smith antibody",
+        "Complement levels (C3, C4)",
+        "Complete Blood Count",
+        "Urinalysis with protein/creatinine ratio",
+        "ESR and CRP",
+        "Antiphospholipid antibodies",
+        "Renal biopsy (if lupus nephritis suspected)",
+        "Echocardiography (for Libman-Sacks endocarditis)"
+      ],
+      "treatment_protocols": [
+        "Hydroxychloroquine (baseline therapy for all SLE patients)",
+        "NSAIDs for musculoskeletal symptoms",
+        "Low-dose corticosteroids for mild flares",
+        "High-dose corticosteroids for organ-threatening disease",
+        "Mycophenolate mofetil or cyclophosphamide for lupus nephritis",
+        "Azathioprine for steroid-sparing maintenance",
+        "Belimumab (anti-BLyS) for refractory disease",
+        "Rituximab for severe refractory cases",
+        "Sun protection and avoidance",
+        "Vaccination (avoid live vaccines on immunosuppression)"
+      ],
+      "severity_levels": {
+        "mild": "Skin and joint involvement only, normal organ function, manageable with hydroxychloroquine and NSAIDs",
+        "moderate": "Serositis, hematologic involvement, or mild renal disease requiring corticosteroids and immunosuppressants",
+        "severe": "Lupus nephritis class III/IV, CNS lupus, pulmonary hemorrhage, or catastrophic antiphospholipid syndrome"
+      }
+    },
+    {
+      "disease_id": "D008",
+      "name": "Lung Adenocarcinoma",
+      "icd10_code": "C34.90",
+      "description": "Lung adenocarcinoma is the most common histologic subtype of non-small cell lung cancer (NSCLC), arising from glandular cells in the peripheral lung tissue. It is the leading cause of cancer-related death worldwide and is strongly associated with targeted molecular alterations that guide precision therapy.",
+      "common_symptoms": [
+        "Persistent cough",
+        "Hemoptysis",
+        "Dyspnea",
+        "Chest pain",
+        "Unintentional weight loss",
+        "Fatigue",
+        "Recurrent pneumonia",
+        "Bone pain (if metastatic)"
+      ],
+      "risk_factors": [
+        "Cigarette smoking (dose-dependent risk)",
+        "Secondhand smoke exposure",
+        "Radon gas exposure",
+        "Asbestos exposure",
+        "Family history of lung cancer",
+        "COPD or pulmonary fibrosis",
+        "EGFR mutation (more common in never-smokers, Asian ethnicity)",
+        "ALK rearrangement (younger patients, never-smokers)"
+      ],
+      "recommended_tests": [
+        "CT chest with contrast (staging)",
+        "PET-CT scan (metastatic evaluation)",
+        "Tissue biopsy (CT-guided or bronchoscopic)",
+        "Molecular profiling (EGFR, ALK, ROS1, BRAF, KRAS, NTRK, RET, MET)",
+        "PD-L1 immunohistochemistry",
+        "Brain MRI (metastasis screening)",
+        "Pulmonary function tests",
+        "Complete Blood Count and CMP",
+        "Thoracentesis if pleural effusion",
+        "Mediastinoscopy for nodal staging"
+      ],
+      "treatment_protocols": [
+        "Stage I: Surgical resection (lobectomy) ± adjuvant chemotherapy",
+        "Stage II: Surgery + adjuvant chemotherapy ± radiation",
+        "Stage IIIA: Multimodal (chemoradiation + immunotherapy or surgery + adjuvant therapy)",
+        "EGFR mutation: Osimertinib (first-line)",
+        "ALK rearrangement: Alectinib or lorlatinib",
+        "ROS1 fusion: Crizotinib or entrectinib",
+        "PD-L1 ≥50% without driver mutation: Pembrolizumab monotherapy",
+        "PD-L1 <50%: Chemotherapy + immunotherapy combination",
+        "Radiation therapy for palliation or curative intent (stage III)",
+        "Supportive care and palliative care integration"
+      ],
+      "severity_levels": {
+        "mild": "Stage I (tumor ≤4cm, no nodal or distant metastasis), surgical cure possible",
+        "moderate": "Stage II-IIIA, regional nodal involvement, multimodal therapy required",
+        "severe": "Stage IIIB-IV, advanced or metastatic disease, palliative/systemic therapy focus"
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "last_updated": "2024-04-20",
+    "source": "MedVision-AI Clinical Knowledge Curation Team",
+    "disclaimer": "This knowledge base is for research and educational purposes only. It does not constitute medical advice. Always verify clinical information against current guidelines and institutional protocols."
+  }
+}
