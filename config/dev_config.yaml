@@ -1,0 +1,77 @@
+# MedVision-AI Development Configuration
+# Inherits from base_config.yaml and overrides for local development.
+
+debug: true
+
+logging:
+  level: "DEBUG"
+  format: "%(asctime)s | %(levelname)-8s | %(name)s:%(lineno)d | %(message)s"
+  handlers:
+    console:
+      enabled: true
+      level: "DEBUG"
+      stream: "stdout"
+    file:
+      enabled: true
+      level: "DEBUG"
+      filename: "logs/medvision_dev.log"
+    error_file:
+      enabled: true
+      level: "WARNING"
+
+database:
+  url: "sqlite:///data/medvision_dev.db"
+  pool_size: 5
+  max_overflow: 5
+  echo: true
+
+redis:
+  host: "localhost"
+  port: 6379
+  db: 1
+  ttl: 1800
+  max_connections: 10
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 1
+  timeout: 300
+  reload: true
+  reload_dirs:
+    - "src"
+    - "configs"
+  verbose: true
+
+security:
+  secret_key: "dev-secret-key-do-not-use-in-production"
+  access_token_expire_minutes: 1440  # 24 hours for convenience
+
+general:
+  seed: 42
+  device: "cpu"
+  num_workers: 2
+  deterministic: true
+  benchmark: false
+
+# Development-specific overrides
+development:
+  hot_reload: true
+  mock_services:
+    enabled: true
+    mock_model_inference: true
+    mock_database: false
+    mock_redis: false
+    mock_external_apis: true
+  verbose_output: true
+  debug_toolbar: true
+  profiling:
+    enabled: false
+    output_dir: "logs/profiling"
+  small_batch_sizes: true
+
+training:
+  batch_size: 8
+  eval_batch_size: 8
+  max_epochs: 2
+  early_stopping_patience: 3

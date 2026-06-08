@@ -1,0 +1,108 @@
+# MedVision-AI Production Configuration
+# Inherits from base_config.yaml and overrides for production deployment.
+
+debug: false
+
+logging:
+  level: "WARNING"
+  format: "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s"
+  handlers:
+    console:
+      enabled: true
+      level: "WARNING"
+      stream: "stdout"
+    file:
+      enabled: true
+      level: "INFO"
+      filename: "/var/log/medvision/medvision.log"
+      max_bytes: 52428800  # 50 MB
+      backup_count: 20
+    error_file:
+      enabled: true
+      level: "ERROR"
+      filename: "/var/log/medvision/medvision_error.log"
+      max_bytes: 52428800
+      backup_count: 30
+
+database:
+  url: "${DATABASE_URL}"
+  pool_size: 20
+  max_overflow: 40
+  pool_timeout: 30
+  pool_recycle: 1800
+  echo: false
+  ssl_mode: "require"
+
+redis:
+  host: "${REDIS_HOST}"
+  port: 6379
+  db: 0
+  ttl: 7200
+  password: "${REDIS_PASSWORD}"
+  max_connections: 100
+  socket_timeout: 5
+  socket_connect_timeout: 3
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 8
+  timeout: 120
+  keep_alive: 30
+  max_request_size: 104857600  # 100 MB
+  gunicorn:
+    worker_class: "uvicorn.workers.UvicornWorker"
+    preload_app: true
+    max_requests: 10000
+    max_requests_jitter: 1000
+    graceful_timeout: 30
+
+security:
+  secret_key: "${SECRET_KEY}"
+  algorithm: "HS256"
+  access_token_expire_minutes: 15
+  refresh_token_expire_days: 1
+  allowed_hosts:
+    - "api.medvision-ai.health"
+    - "staging.medvision-ai.health"
+  cors_origins:
+    - "https://medvision-ai.health"
+    - "https://app.medvision-ai.health"
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 60
+    burst: 10
+    by_ip: true
+
+general:
+  seed: 42
+  device: "cuda"
+  num_workers: 8
+  deterministic: false
+  benchmark: true
+
+# Production-specific overrides
+production:
+  caching:
+    enabled: true
+    backend: "redis"
+    default_timeout: 3600
+    key_prefix: "medvision:"
+  monitoring:
+    enabled: true
+    metrics_port: 9090
+    health_check_interval: 30
+    alert_on_failure: true
+  gpu:
+    enabled: true
+    device_ids: [0, 1]
+    memory_fraction: 0.9
+    allow_growth: true
+
+training:
+  batch_size: 64
+  eval_batch_size: 128
+  max_epochs: 100
+  early_stopping_patience: 10
+  gradient_accumulation_steps: 4
+  mixed_precision: true

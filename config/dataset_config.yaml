@@ -1,0 +1,149 @@
+# MedVision-AI Dataset Configuration
+# Defines data loading, preprocessing, augmentation, and splitting strategies.
+
+image_dataset:
+  formats:
+    - "png"
+    - "jpg"
+    - "jpeg"
+    - "dicom"
+  image_size:
+    width: 224
+    height: 224
+  augmentation:
+    enabled: true
+    train:
+      random_rotate: true
+      rotate_limit: 15
+      random_flip: true
+      flip_probability: 0.5
+      random_brightness: true
+      brightness_limit: 0.2
+      random_contrast: true
+      contrast_limit: 0.2
+      random_crop: true
+      crop_scale: [0.8, 1.0]
+      gaussian_noise: true
+      noise_std: 0.01
+      cutout: true
+      cutout_n_holes: 1
+      cutout_length: 32
+      mixup: false
+      mixup_alpha: 0.2
+    val:
+      center_crop: true
+      normalize: true
+    test:
+      center_crop: true
+      normalize: true
+  dicom:
+    window_level: null
+    window_width: null
+    rescale_intercept: true
+    rescale_slope: true
+    photometric_interpretation: "MONOCHROME2"
+    metadata_fields:
+      - "PatientID"
+      - "StudyDate"
+      - "Modality"
+      - "BodyPartExamined"
+      - "StudyDescription"
+  preprocessing:
+    normalize:
+      mean: [0.485, 0.456, 0.406]
+      std: [0.229, 0.224, 0.225]
+    resize_method: "bilinear"
+    convert_grayscale_to_rgb: true
+    clip_pixel_range: [0, 255]
+
+text_dataset:
+  max_length: 512
+  truncation: true
+  padding: "max_length"
+  tokenizer: "biobert"
+  tokenizer_name: "emilyalsentzer/Bio_ClinicalBERT"
+  do_lower_case: true
+  clean_text: true
+  remove_html: true
+  normalize_unicode: true
+  handle_negation: true
+  negation_window: 3
+  symptom_extraction:
+    enabled: true
+    method: "ner"
+    min_symptom_length: 2
+  language: "en"
+
+split:
+  train: 0.7
+  val: 0.15
+  test: 0.15
+  stratify: true
+  stratify_column: "label"
+  random_state: 42
+  group_column: null
+  k_fold:
+    enabled: false
+    n_splits: 5
+    shuffle: true
+
+dataloader:
+  batch_size: 32
+  eval_batch_size: 64
+  num_workers: 4
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 2
+  drop_last: false
+  shuffle_train: true
+
+class_mapping:
+  medical_conditions:
+    0: "normal"
+    1: "pneumonia"
+    2: "cardiomegaly"
+    3: "pleural_effusion"
+    4: "nodule"
+    5: "fracture"
+    6: "atelectasis"
+    7: "consolidation"
+    8: "pneumothorax"
+    9: "edema"
+    10: "emphysema"
+    11: "fibrosis"
+    12: "hernia"
+    13: "mass"
+    14: "infiltration"
+  severity_levels:
+    0: "none"
+    1: "mild"
+    2: "moderate"
+    3: "severe"
+    4: "critical"
+  body_regions:
+    0: "chest"
+    1: "abdomen"
+    2: "head_neck"
+    3: "spine"
+    4: "extremities"
+
+class_weights:
+  method: "inverse_frequency"
+  min_weight: 0.5
+  max_weight: 10.0
+  smoothing: 0.1
+
+paths:
+  raw_data_dir: "data/raw"
+  processed_data_dir: "data/processed"
+  cache_dir: "data/cache"
+  external_data_dir: "data/external"
+
+validation:
+  check_corrupted: true
+  check_duplicates: true
+  check_label_distribution: true
+  max_class_imbalance_ratio: 10.0
+  min_samples_per_class: 10
+  validate_dicom_headers: true
+  check_phi_leakage: true

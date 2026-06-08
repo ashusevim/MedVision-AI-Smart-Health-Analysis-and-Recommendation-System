@@ -1,0 +1,205 @@
+# MedVision-AI API Configuration
+# Defines server, CORS, rate limiting, authentication, and endpoint settings.
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  timeout: 120
+  keep_alive: 5
+  max_request_size: 52428800  # 50 MB
+  request_timeout: 60
+  graceful_shutdown_timeout: 30
+
+cors:
+  allowed_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8000"
+    - "https://medvision-ai.health"
+    - "https://app.medvision-ai.health"
+  allowed_methods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "PATCH"
+    - "DELETE"
+    - "OPTIONS"
+  allowed_headers:
+    - "Authorization"
+    - "Content-Type"
+    - "X-Request-ID"
+    - "X-API-Key"
+    - "Accept"
+    - "Origin"
+  exposed_headers:
+    - "X-Request-ID"
+    - "X-RateLimit-Limit"
+    - "X-RateLimit-Remaining"
+    - "X-RateLimit-Reset"
+  allow_credentials: true
+  max_age: 86400
+
+rate_limiting:
+  enabled: true
+  requests_per_minute: 60
+  burst: 10
+  per_endpoint:
+    /api/v1/predict:
+      requests_per_minute: 30
+      burst: 5
+    /api/v1/batch:
+      requests_per_minute: 10
+      burst: 2
+    /api/v1/report:
+      requests_per_minute: 20
+      burst: 3
+  storage: "redis"
+  key_prefix: "ratelimit:"
+  by_ip: true
+  by_user: true
+
+authentication:
+  jwt_secret: "${JWT_SECRET}"
+  algorithm: "HS256"
+  token_expiry_minutes: 30
+  refresh_token_expiry_days: 7
+  issuer: "medvision-ai"
+  audience: "medvision-api"
+  require_https: true
+  api_key:
+    enabled: true
+    header_name: "X-API-Key"
+    query_param: "api_key"
+  roles:
+    - name: "admin"
+      permissions:
+        - "read"
+        - "write"
+        - "delete"
+        - "manage_users"
+    - name: "clinician"
+      permissions:
+        - "read"
+        - "write"
+        - "predict"
+        - "report"
+    - name: "researcher"
+      permissions:
+        - "read"
+        - "predict"
+        - "batch"
+    - name: "viewer"
+      permissions:
+        - "read"
+
+endpoints:
+  health:
+    path: "/health"
+    method: "GET"
+    auth_required: false
+    description: "Health check endpoint for monitoring"
+    cache_ttl: 0
+
+  predict:
+    path: "/predict"
+    method: "POST"
+    auth_required: true
+    roles: ["admin", "clinician", "researcher"]
+    description: "Single prediction on medical image and/or symptoms"
+    max_file_size: 52428800  # 50 MB
+    accepted_formats:
+      - "image/png"
+      - "image/jpeg"
+      - "application/dicom"
+    cache_ttl: 0
+    timeout: 60
+
+  report:
+    path: "/report"
+    method: "POST"
+    auth_required: true
+    roles: ["admin", "clinician"]
+    description: "Generate comprehensive medical analysis report"
+    max_file_size: 52428800
+    cache_ttl: 300
+    timeout: 120
+
+  batch:
+    path: "/batch"
+    method: "POST"
+    auth_required: true
+    roles: ["admin", "researcher"]
+    description: "Batch prediction on multiple samples"
+    max_items: 100
+    cache_ttl: 0
+    timeout: 300
+    async_processing: true
+    callback_url: true
+
+versioning:
+  prefix: "/api/v1"
+  supported_versions:
+    - "v1"
+  default_version: "v1"
+  deprecation_notice: true
+  sunset_header: true
+
+docs:
+  swagger:
+    enabled: true
+    path: "/docs"
+    title: "MedVision-AI API"
+    description: "Multimodal Medical AI Analysis API"
+    version: "1.0.0"
+    contact:
+      name: "MedVision-AI Team"
+      email: "api@medvision-ai.health"
+    license:
+      name: "MIT"
+      url: "https://opensource.org/licenses/MIT"
+  redoc:
+    enabled: true
+    path: "/redoc"
+  openapi:
+    path: "/openapi.json"
+    schema_version: "3.0.3"
+
+error_handling:
+  standard_format: true
+  include_request_id: true
+  include_timestamp: true
+  error_response_schema:
+    error:
+      code: "string"
+      message: "string"
+      details: "object"
+      request_id: "string"
+      timestamp: "string"
+  custom_errors:
+    400:
+      code: "BAD_REQUEST"
+      message: "Invalid request parameters"
+    401:
+      code: "UNAUTHORIZED"
+      message: "Authentication required"
+    403:
+      code: "FORBIDDEN"
+      message: "Insufficient permissions"
+    404:
+      code: "NOT_FOUND"
+      message: "Resource not found"
+    413:
+      code: "PAYLOAD_TOO_LARGE"
+      message: "File size exceeds maximum allowed"
+    422:
+      code: "UNPROCESSABLE_ENTITY"
+      message: "Invalid medical image format"
+    429:
+      code: "RATE_LIMITED"
+      message: "Too many requests"
+    500:
+      code: "INTERNAL_ERROR"
+      message: "Internal server error"
+    503:
+      code: "SERVICE_UNAVAILABLE"
+      message: "Model inference service unavailable"
