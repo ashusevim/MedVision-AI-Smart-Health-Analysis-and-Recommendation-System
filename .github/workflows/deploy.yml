@@ -1,0 +1,212 @@
+name: Deploy
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+          - production
+      image_tag:
+        description: "Docker image tag (defaults to git SHA)"
+        required: false
+        type: string
+
+concurrency:
+  group: deploy-${{ github.event.inputs.environment || 'staging' }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+      image_digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+            VERSION=${{ github.ref_name }}
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'staging' ||
+      github.event_name == 'release'
+    environment:
+      name: staging
+      url: https://staging.medvision-ai.health
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure deployment credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to staging
+        env:
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
+          KUBE_NAMESPACE: medvision-staging
+        run: |
+          echo "Deploying image $IMAGE_TAG to staging..."
+          kubectl set image deployment/medvision-ai \
+            medvision-ai=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -n $KUBE_NAMESPACE
+          kubectl rollout status deployment/medvision-ai \
+            -n $KUBE_NAMESPACE \
+            --timeout=300s
+
+      - name: Health check - Staging
+        run: |
+          echo "Running health check against staging..."
+          for i in $(seq 1 10); do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              https://staging.medvision-ai.health/api/v1/health || echo "000")
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              echo "Health check passed (HTTP $HTTP_STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/10: Health check returned HTTP $HTTP_STATUS. Retrying in 15s..."
+            sleep 15
+          done
+          echo "::error::Health check failed after 10 attempts"
+          exit 1
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build, deploy-staging]
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://api.medvision-ai.health
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure deployment credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to production
+        env:
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
+          KUBE_NAMESPACE: medvision-production
+          DB_MIGRATION_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+        run: |
+          echo "Running database migrations..."
+          alembic upgrade head
+
+          echo "Deploying image $IMAGE_TAG to production..."
+          kubectl set image deployment/medvision-ai \
+            medvision-ai=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -n $KUBE_NAMESPACE
+          kubectl rollout status deployment/medvision-ai \
+            -n $KUBE_NAMESPACE \
+            --timeout=600s
+
+      - name: Health check - Production
+        run: |
+          echo "Running health check against production..."
+          for i in $(seq 1 15); do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              https://api.medvision-ai.health/api/v1/health || echo "000")
+            if [ "$HTTP_STATUS" -eq 200 ]; then
+              echo "Production health check passed (HTTP $HTTP_STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/15: Health check returned HTTP $HTTP_STATUS. Retrying in 20s..."
+            sleep 20
+          done
+          echo "::error::Production health check failed after 15 attempts"
+          exit 1
+
+      - name: Verify model endpoints
+        run: |
+          echo "Verifying AI model endpoints..."
+          ENDPOINTS=("/api/v1/predict" "/api/v1/report" "/api/v1/batch")
+          for endpoint in "${ENDPOINTS[@]}"; do
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              "https://api.medvision-ai.health${endpoint}" || echo "000")
+            if [ "$HTTP_STATUS" -ne 200 ] && [ "$HTTP_STATUS" -ne 401 ]; then
+              echo "::warning::Endpoint $endpoint returned HTTP $HTTP_STATUS"
+            else
+              echo "Endpoint $endpoint OK (HTTP $HTTP_STATUS)"
+            fi
+          done
+
+      - name: Rollback on failure
+        if: failure()
+        run: |
+          echo "::error::Deployment failed, initiating rollback..."
+          kubectl rollout undo deployment/medvision-ai \
+            -n medvision-production
+          kubectl rollout status deployment/medvision-ai \
+            -n medvision-production \
+            --timeout=300s
+          echo "Rollback completed"
