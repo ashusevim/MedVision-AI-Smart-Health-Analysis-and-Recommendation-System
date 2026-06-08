@@ -1,0 +1,189 @@
+================================================================================
+                    MEDVISION-AI MEDICAL REPORT
+                    Sample Clinical Document
+================================================================================
+
+PATIENT INFORMATION
+--------------------------------------------------------------------------------
+Patient ID:         P007
+Name:               [REDACTED - PHI Protected]
+Age/Sex:            63-year-old Male
+Date of Birth:      [REDACTED]
+MRN:                MRN-2024-00742
+Encounter ID:       ENC-2024-01207
+Admission Date:     January 21, 2024
+Admitting Service:  Neurology / Stroke Service
+Attending:          Dr. Michael Park, MD (Neurology)
+Referring:          Dr. Sarah Chen, MD (Emergency Medicine)
+Insurance:          Medicare
+
+CHIEF COMPLAINT
+--------------------------------------------------------------------------------
+Sudden onset left-sided weakness and slurred speech, approximately 2 hours
+duration. Brought to ED by spouse after witnessed onset at home.
+
+HISTORY OF PRESENT ILLNESS
+--------------------------------------------------------------------------------
+The patient is a 63-year-old right-handed male with a history of hypertension,
+type 2 diabetes mellitus, hyperlipidemia, and paroxysmal atrial fibrillation
+who presents to the Emergency Department with acute onset of left hemiparesis
+and dysarthria.
+
+The patient was in his usual state of health this morning. At approximately
+08:15 AM, his spouse noted that he suddenly developed slurred speech and
+difficulty moving his left arm and leg. The spouse immediately called 911.
+The patient denies any preceding headache, visual changes, chest pain, or
+palpitations. He reports mild bilateral frontal headache since awakening.
+There is no history of recent head trauma, seizure activity, or similar
+episodes in the past.
+
+Last known well time: 08:15 AM (approximately 2 hours ago).
+The patient was last seen normal by his spouse at 08:00 AM.
+
+PAST MEDICAL HISTORY
+--------------------------------------------------------------------------------
+1. Hypertension (2012) - Poorly controlled, baseline BP ~150/90s
+2. Type 2 Diabetes Mellitus (2015) - HbA1c 7.8% on metformin
+3. Hyperlipidemia (2013) - LDL 148 on atorvastatin
+4. Paroxysmal Atrial Fibrillation (2020) - On warfarin, last INR 3.2
+5. Former smoker (30 pack-years, quit 2018)
+6. Benign Prostatic Hyperplasia (2019)
+
+MEDICATIONS ON ADMISSION
+--------------------------------------------------------------------------------
+1. Lisinopril 20mg PO daily
+2. Metformin 1000mg PO BID
+3. Atorvastatin 40mg PO daily at bedtime
+4. Warfarin 5mg PO daily (last INR 3.2, supratherapeutic)
+5. Aspirin 81mg PO daily
+
+ALLERGIES
+--------------------------------------------------------------------------------
+- Penicillin (rash, moderate)
+- Iodine contrast (hives, mild)
+
+PHYSICAL EXAMINATION
+--------------------------------------------------------------------------------
+VITALS: BP 172/98 | HR 95 | RR 20 | T 99.1F | SpO2 93% RA
+
+GENERAL: Alert, awake, in mild distress. Appears older than stated age.
+         Supine on stretcher, resting comfortably.
+
+HEENT: Normocephalic, atraumatic. Pupils equal, round, reactive to light.
+       Extraocular movements intact. No nystagmus. Left facial droop
+       involving forehead and lower face (UMN pattern). Tongue midline.
+
+NECK: Supple, no meningismus. No carotid bruits. No JVD.
+
+CARDIOVASCULAR: Regular rate and rhythm. No murmurs, gallops, or rubs.
+                No peripheral edema. Capillary refill <2 seconds.
+
+PULMONARY: Clear to auscultation bilaterally. No wheezes, rales, or rhonchi.
+           Symmetric chest expansion.
+
+ABDOMEN: Soft, non-tender, non-distended. Normal bowel sounds in all quadrants.
+
+EXTREMITIES: Left upper extremity: 2/5 strength (deltoid, biceps, triceps,
+             wrist extensors, grip). Left lower extremity: 3/5 strength
+             (hip flexors, quadriceps, dorsiflexors, plantar flexors).
+             Right side: 5/5 strength throughout. No clubbing or cyanosis.
+
+SKIN: Warm and dry. No rashes or lesions. No signs of trauma.
+
+NEUROLOGICAL: Alert and oriented x3 (person, place, time). Follows commands.
+              Dysarthric speech, intelligible but slow. Word-finding difficulty.
+              Left hemiparesis as noted above. Left-sided hemisensory deficit
+              to pinprick and light touch. Left facial droop (central pattern).
+              No visual field deficits on confrontation. No neglect.
+              NIHSS Score: 8 (Level 1a: 0, 1b: 0, 1c: 0, Best Gaze: 0,
+              Visual: 0, Facial Palsy: 2, Left Arm: 3, Right Arm: 0,
+              Left Leg: 2, Right Leg: 0, Limb Ataxia: 0, Sensory: 1,
+              Best Language: 0, Dysarthria: 1, Extinction: 0)
+              GCS: 14 (E4V5M6)
+
+EMERGENCY DEPARTMENT COURSE
+--------------------------------------------------------------------------------
+- 08:45 AM: Arrival to ED. Stroke Code activated.
+- 08:50 AM: STAT non-contrast CT head: No acute intracranial hemorrhage.
+             Early ischemic changes noted in right MCA territory (ASPECTS 8).
+- 08:55 AM: CT Angiography head/neck: Occlusion of right M1 segment of MCA.
+             No large vessel occlusion in posterior circulation.
+- 09:00 AM: Lab results: INR 3.2 (supratherapeutic on warfarin), glucose 185,
+             creatinine 1.4, platelets 180.
+- 09:05 AM: Neurology consulted. Patient NOT candidate for IV tPA due to
+             INR >1.7 on warfarin (AHA/ASA guideline contraindication).
+- 09:10 AM: Neurointerventional radiology consulted for mechanical
+             thrombectomy evaluation.
+- 09:30 AM: Patient transferred to neuro-angiography suite for emergent
+             mechanical thrombectomy under conscious sedation.
+
+ASSESSMENT
+--------------------------------------------------------------------------------
+1. ACUTE ISCHEMIC STROKE - Right MCA territory
+   - Etiology: Likely cardioembolic (atrial fibrillation with
+     supratherapeutic INR despite warfarin therapy)
+   - NIHSS: 8 (moderate stroke)
+   - Large vessel occlusion: Right M1 MCA
+   - Within therapeutic window for mechanical thrombectomy
+   - NOT a candidate for IV tPA (INR >1.7)
+
+2. HYPERTENSION - Uncontrolled, likely contributing to stroke risk
+
+3. ATRIAL FIBRILLATION - Paroxysmal, suboptimally anticoagulated
+
+4. TYPE 2 DIABETES MELLITUS - HbA1c 7.8%
+
+5. HYPERLIPIDEMIA - LDL above goal
+
+PLAN
+--------------------------------------------------------------------------------
+1. STROKE MANAGEMENT:
+   a. Emergent mechanical thrombectomy - right M1 MCA occlusion
+   b. Admit to Neuro-ICU post-procedure for close monitoring
+   c. Strict BP parameters: SBP <180, DBP <105 post-thrombectomy
+   d. Serial neuro checks q1h x 24 hours, then q2h
+   e. Repeat CT head 24 hours post-procedure to assess for hemorrhagic
+      conversion
+   f. Hold anticoagulation acutely; plan for bridge therapy once stable
+   g. Secondary stroke workup: TTE, TEE, telemetry monitor for AF duration
+
+2. BLOOD PRESSURE MANAGEMENT:
+   a. Nicardipine drip for SBP >180
+   b. Transition to oral agents once stable
+   c. Continue home lisinopril once tolerating PO
+
+3. ANTICOAGULATION MANAGEMENT:
+   a. Hold warfarin and aspirin acutely (high bleed risk post-thrombectomy)
+   b. Plan to restart anticoagulation in 7-14 days if no hemorrhagic
+      conversion on follow-up imaging
+   c. Consider DOAC transition (apixaban/rivaroxaban) given suboptimal
+      warfarin control and TTR
+
+4. DIABETES MANAGEMENT:
+   a. Insulin sliding scale for glucose control in acute setting
+   b. Target glucose 140-180 mg/dL per AHA stroke guidelines
+   c. Resume metformin once tolerating PO and renal function stable
+
+5. LIPID MANAGEMENT:
+   a. Continue atorvastatin 40mg (high-intensity statin per ACC/AHA)
+   b. Consider addition of ezetimibe if LDL remains >70 at follow-up
+
+6. REHABILITATION:
+   a. Physical therapy evaluation for left hemiparesis
+   b. Occupational therapy evaluation for ADL assistance
+   c. Speech therapy evaluation for dysarthria
+   d. Early mobilization per stroke protocol
+
+7. DISPOSITION:
+   a. Discharge to acute inpatient rehabilitation when medically stable
+   b. Stroke education and secondary prevention counseling
+   c. Follow-up with Neurology in 2-4 weeks post-discharge
+
+8. CODE STATUS: Full Code (discussed with patient and family)
+
+================================================================================
+                REPORT GENERATED BY MEDVISION-AI
+                Document ID: RPT-2024-01207-001
+                Generated: 2024-01-21T14:30:00Z
+                Classification: CONFIDENTIAL - PHI PROTECTED
+================================================================================
