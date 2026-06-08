@@ -1,0 +1,94 @@
+{
+  "patient_id": "P007",
+  "age": 61,
+  "gender": "M",
+  "reported_symptoms": [
+    {
+      "symptom": "Left-sided weakness",
+      "severity": "severe",
+      "duration": "3 hours",
+      "onset_date": "2024-03-01"
+    },
+    {
+      "symptom": "Slurred speech",
+      "severity": "moderate",
+      "duration": "3 hours",
+      "onset_date": "2024-03-01"
+    },
+    {
+      "symptom": "Facial drooping (left side)",
+      "severity": "severe",
+      "duration": "3 hours",
+      "onset_date": "2024-03-01"
+    },
+    {
+      "symptom": "Headache",
+      "severity": "moderate",
+      "duration": "1 day",
+      "onset_date": "2024-02-29"
+    },
+    {
+      "symptom": "Dizziness",
+      "severity": "mild",
+      "duration": "3 hours",
+      "onset_date": "2024-03-01"
+    },
+    {
+      "symptom": "Palpitations",
+      "severity": "mild",
+      "duration": "2 weeks",
+      "onset_date": "2024-02-15"
+    }
+  ],
+  "medical_history": [
+    "Atrial Fibrillation (diagnosed 2019)",
+    "Hypertension (diagnosed 2015)",
+    "Hyperlipidemia (diagnosed 2016)",
+    "Type 2 Diabetes Mellitus (diagnosed 2018)",
+    "Prior TIA (2022)"
+  ],
+  "current_medications": [
+    {
+      "name": "Apixaban",
+      "dosage": "5 mg",
+      "frequency": "twice daily",
+      "indication": "Atrial fibrillation stroke prophylaxis"
+    },
+    {
+      "name": "Metoprolol Succinate",
+      "dosage": "50 mg",
+      "frequency": "once daily",
+      "indication": "Hypertension and rate control"
+    },
+    {
+      "name": "Atorvastatin",
+      "dosage": "40 mg",
+      "frequency": "once daily at bedtime",
+      "indication": "Hyperlipidemia"
+    },
+    {
+      "name": "Metformin",
+      "dosage": "1000 mg",
+      "frequency": "twice daily",
+      "indication": "Type 2 diabetes mellitus"
+    },
+    {
+      "name": "Lisinopril",
+      "dosage": "10 mg",
+      "frequency": "once daily",
+      "indication": "Hypertension"
+    }
+  ],
+  "allergies": [
+    {
+      "substance": "Penicillin",
+      "reaction": "Anaphylaxis",
+      "severity": "severe"
+    },
+    {
+      "substance": "Iodine contrast",
+      "reaction": "Urticaria",
+      "severity": "moderate"
+    }
+  ]
+}
